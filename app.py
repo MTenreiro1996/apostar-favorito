@@ -13,51 +13,57 @@ st.sidebar.header("💰 Gestão de Banca (OrbitX)")
 banca_atual = st.sidebar.number_input("Valor da Banca Atual (€)", min_value=1.0, value=st.session_state.banca, step=10.0)
 st.session_state.banca = banca_atual
 
+# LISTA CORRIGIDA: Adicionadas as opções 1 e 2 para a escolha da percentagem
 stake_opt = st.sidebar.radio("Percentagem de Risco (Flat Stake)", [1, 2], format_func=lambda x: f"{x}%")
 stake_dinheiro = banca_atual * (stake_opt / 100)
 st.sidebar.info(f"**Tua Stake Fixa:** {stake_dinheiro:.2f}€")
 
-tab1, tab2 = st.tabs(["📋 Radar Pré-Live (Os Teus Alvos)", "📊 Calculadora Live (Minuto 55-60)"])
+# ABAS DA APLICAÇÃO
+tab1, tab2 = st.tabs(["📋 Lista de Alvos Semanais", "📊 Calculadora Live (Minuto 55-60)"])
 
 with tab1:
-    st.subheader("🔍 A Minha Lista de Vigilância para Hoje")
-    st.markdown("De manhã, encontra os favoritos em casa (Odd 1.20 - 1.30) e regista-os aqui:")
+    st.subheader("📌 Condições Obrigatórias de Seleção (Pré-Live)")
+    st.markdown("""
+    Antes de registares qualquer jogo para a semana, garante que ele cumpre estes **3 critérios estritos**:
+    1. 🏟️ **Fator Casa:** A equipa favorita joga obrigatoriamente no seu próprio estádio.
+    2. 📈 **Odds de Abertura:** A odd inicial para a vitória do visitado (1) está estritamente entre **1.20 e 1.35**.
+    3. 🏆 **Teste da Classificação:** O favorito está no **Top 4** da tabela e o adversário está na metade inferior.
+    """)
+    st.markdown("---")
     
-    jogo_introduzido = st.text_input("Escreve o jogo do dia:", placeholder="Ex: Sporting vs Casa Pia")
+    st.subheader("🔍 A Minha Agenda de Trading da Semana")
+    st.markdown("Planeia a tua semana na segunda-feira. Deixa os alvos anotados por blocos de dias:")
     
-    if jogo_introduzido:
-        st.info(f"🎯 **Alvo Ativo:** {jogo_introduzido}")
-        st.markdown("**Plano:** Se chegar ao **minuto 55-60 com 0-0**, abre a tua aplicação desportiva e vai para a aba ao lado.")
-    else:
-        st.write("Introduz um jogo acima para ativar o radar.")
+    jogos_meio_semana = st.text_area("Jogos de Terça a Quinta-Feira:", placeholder="Ex:\nTerça 20h00: Sporting vs Farense\nQuarta 19h45: Barcelona vs Getafe")
+    jogos_fim_semana = st.text_area("Jogos de Sexta a Domingo:", placeholder="Ex:\nSábado 15h30: Real Madrid vs Alavés\nDomingo 18h00: Benfica vs Gil Vicente")
 
 with tab2:
-    st.subheader("⚡ Validação de Massacre Real")
-    st.markdown("Insere os números reais que estás a ver na tua aplicação a partir do minuto 55 com o jogo **0-0**.")
+    st.subheader("⚡ Validação de Massacre Real (SofaScore / FlashScore)")
+    st.markdown("Chegou o **minuto 55-60** e o jogo continua **0-0**? Confirma as estatísticas e marca com um **certo (✓)**:")
 
     col1, col2 = st.columns(2)
     
     with col1:
-        odd_live = st.number_input("Odd Atual do Favorito na Bolsa (Ver na OrbitX)", min_value=1.0, value=1.80, step=0.05)
-        remates_no_alvo = st.number_input("Remates NO ALVO / À Baliza do Favorito (Ver na aba 'Estatísticas' do SofaScore ou FlashScore)", min_value=0, value=3)
-        atq_perigosos_fav = st.number_input("Ataques Perigosos do FAVORITO (Ver na aba 'Estatísticas' do FlashScore)", min_value=0, value=50)
-        atq_perigosos_adv = st.number_input("Ataques Perigosos do ADVERSÁRIO (Ver na aba 'Estatísticas' do FlashScore)", min_value=0, value=20)
+        st.markdown("#### 📊 Estatísticas de Volume:")
+        criterio_remates = st.checkbox("O favorito tem pelo menos 2 ou 3 Remates no Alvo / À Baliza? (Ver aba 'Estatísticas' do SofaScore ou FlashScore)")
+        criterio_chances = st.checkbox("O favorito já criou 1 ou 2 Grandes Chances de Golo? (Ver aba 'Estatísticas' do SofaScore)")
+        criterio_ataques = st.checkbox("O favorito tem um volume alto de Ataques Perigosos? (Ver aba 'Estatísticas' do FlashScore)")
         
     with col2:
-        st.markdown("#### Leitura Visual do Gráfico em Direto:")
-        grafico_sufoco = st.checkbox("O gráfico mostra barras altas do favorito coladas ao topo nos últimos 10 minutos? (Ver gráfico 'Attack Momentum' no SofaScore ou barras cinzentas na FlashScore)")
-        adversario_morto = st.checkbox("O adversário quase não atacou nos últimos 10 minutos? (Ver a ausência de barras contrárias no SofaScore ou FlashScore)")
-        sub_ofensivas = st.checkbox("O treinador do favorito fez substituições para meter a equipa mais ofensiva? (Ver aba 'Alinhamentos' / Notícias do jogo)")
+        st.markdown("#### 👁️ Leitura Visual e Contexto:")
+        grafico_sufoco = st.checkbox("O gráfico mostra barras altas do favorito coladas ao topo nos últimos 10 minutos? (Ver 'Attack Momentum' no SofaScore ou barras cinzentas na FlashScore)")
+        bloco_baixo = st.checkbox("O adversário está totalmente trancado na sua área a sofrer sufoco?")
+        sub_ofensivas = st.checkbox("O treinador do favorito já fez ou está a fazer substituições ofensivas para ganhar? (Ver aba 'Alinhamentos')")
 
     st.markdown("### 📢 Veredito da Ferramenta:")
     
-    # Critérios recalculados: Sem cantos, focando em Remates, Ataques Perigosos e Leitura Visual
+    # O sinal verde só dispara se todos os critérios forem validados com "certo" pelo utilizador
     criterios_validos = (
-        odd_live >= 1.50 and 
-        remates_no_alvo >= 2 and 
-        atq_perigosos_fav >= (atq_perigosos_adv * 2) and 
+        criterio_remates and 
+        criterio_chances and 
+        criterio_ataques and 
         grafico_sufoco and 
-        adversario_morto and 
+        bloco_baixo and 
         sub_ofensivas
     )
 
@@ -68,4 +74,4 @@ with tab2:
                  f"• **Stop Loss:** Se continuar 0-0 ao minuto 78-80, fazer Cash Out na OrbitX e aceitar o red parcial.")
     else:
         st.warning("⚠️ **AGUARDAR / NÃO ENTRAR** ⚠️\n\n"
-                   "Os critérios combinados de massacre e valor de odd ainda não foram totalmente atingidos. Não arrisques o teu dinheiro.")
+                   "Garante que todos os critérios de massacre acima estão marcados com um certo. Se faltar apenas um, não arrisques o teu dinheiro.")
