@@ -31,20 +31,18 @@ with col1:
 with col2:
     st.markdown("#### 👁️ Leitura Visual do Gráfico:")
     grafico_sufoco = st.checkbox("O gráfico mostra barras altas do favorito coladas ao topo nos últimos 10 minutos? (Ver 'Attack Momentum' no SofaScore ou barras cinzentas na FlashScore)")
-    adversario_morto = st.checkbox("O adversário quase não atacou nos últimos 10 minutos? (Ver a ausência de barras contrárias no SofaScore ou FlashScore)")
 
 st.markdown("---")
 
 # 3. VEREDITO FINAL DA FERRAMENTA
 st.subheader("📢 Veredito da Ferramenta:")
 
-# O sinal verde só dispara se todos os 5 critérios reais forem validados com "certo"
+# O sinal verde só dispara se todos os 4 critérios reais forem validados com "certo"
 criterios_validos = (
     criterio_remates and 
     criterio_chances and 
     criterio_ataques and 
-    grafico_sufoco and 
-    adversario_morto
+    grafico_sufoco
 )
 
 if criterios_validos:
