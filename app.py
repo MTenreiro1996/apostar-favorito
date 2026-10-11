@@ -24,24 +24,22 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("#### 📊 Estatísticas de Volume:")
-    criterio_remates = st.checkbox("O favorito tem pelo menos 2 ou 3 Remates no Alvo / À Baliza? (Ver aba 'Estatísticas' do SofaScore ou FlashScore)")
-    criterio_chances = st.checkbox("O favorito já criou 1 ou 2 Grandes Chances de Golo? (Ver aba 'Estatísticas' do SofaScore)")
-    criterio_ataques = st.checkbox("O favorito tem um volume de Ataques Perigosos que é pelo menos o dobro ou o triplo do adversário? (Ver aba 'Estatísticas' do FlashScore)")
+    criterio_remates = st.checkbox("O favorito tem pelo menos 2 ou 3 'Remates à baliza'? (Ver na aba 'Estatísticas' do SofaScore ou Flashscore)")
+    criterio_chances = st.checkbox("O favorito já criou 1 ou 2 'Grandes oportunidades'? (Ver na aba 'Estatísticas' do SofaScore ou Flashscore)")
     
 with col2:
     st.markdown("#### 👁️ Leitura Visual do Gráfico:")
-    grafico_sufoco = st.checkbox("O gráfico mostra barras altas do favorito coladas ao topo nos últimos 10 minutos? (Ver 'Attack Momentum' no SofaScore ou barras cinzentas na FlashScore)")
+    grafico_sufoco = st.checkbox("O gráfico mostra barras altas do favorito coladas ao topo nos últimos 10 minutos? (Ver gráfico 'Momento do ataque' no SofaScore ou 'Desempenho ao vivo' na Flashscore)")
 
 st.markdown("---")
 
 # 3. VEREDITO FINAL DA FERRAMENTA
 st.subheader("📢 Veredito da Ferramenta:")
 
-# O sinal verde só dispara se todos os 4 critérios reais forem validados com "certo"
+# O sinal verde só dispara se todos os 3 critérios reais forem validados com "certo"
 criterios_validos = (
     criterio_remates and 
     criterio_chances and 
-    criterio_ataques and 
     grafico_sufoco
 )
 
